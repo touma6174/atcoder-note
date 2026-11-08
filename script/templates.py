@@ -1,4 +1,4 @@
-# https://github.com/touma6174/competitive-programming-library.git
+# https://github.com/touma6174/atcoder-note.git
 def yn(x: bool) -> None:
     print("Yes" if x else "No")
 def YN(x: bool) -> None:

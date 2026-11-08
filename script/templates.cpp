@@ -1,4 +1,4 @@
-// https://github.com/touma6174/competitive-programming-library.git
+// https://github.com/touma6174/atcoder-note.git
 #ifdef ONLINE_JUDGE
 #pragma GCC target("avx2")
 #pragma GCC optimize("O3")
