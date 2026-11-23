@@ -1,4 +1,3 @@
-
 import argparse
 #import random
 import subprocess
@@ -54,7 +53,9 @@ def save_failure(seed, input_data=None, ac=None, wa=None):
         )
     return prob_dir
 
-def is_continue():
+def is_continue(y: bool):
+    if y:
+        return True
     try:
         ans = input("continue? [Y/n] ")
     except KeyboardInterrupt:
@@ -70,6 +71,7 @@ def main():
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--tests", type=int, default=1000)
     parser.add_argument("--timeout", type=float, default=2.0)
+    parser.add_argument("-y", action="store_true")
     args = parser.parse_args()
 
     PROBMEL_PATH = BASE_DIR / "problem"
@@ -96,7 +98,7 @@ def main():
                 print(f"Generator error! seed={seed}")
                 print(gen.stderr)
                 save_failure(seed)
-                if not is_continue():
+                if not is_continue(args.y):
                     return
 
             input_data = gen.stdout
@@ -113,7 +115,7 @@ def main():
                 print(f"ac error! seed={seed}")
                 print(ac.stderr)
                 save_failure(seed, input_data, ac, wa)
-                if not is_continue():
+                if not is_continue(args.y):
                     return
 
             # 3. 検証対象コード
@@ -128,7 +130,7 @@ def main():
                 print(f"wa error! seed={seed}")
                 print(wa.stderr)
                 save_failure(seed, input_data, ac, wa)
-                if not is_continue():
+                if not is_continue(args.y):
                     return
 
             # 4. 出力比較（空白・改行の差は無視）
@@ -143,7 +145,7 @@ def main():
                 print("\n--- Actual output ---")
                 print(wa.stdout, end="")
                 print(f"\n\nSaved to {prob_dir}")
-                if not is_continue():
+                if not is_continue(args.y):
                     return
 
         except subprocess.TimeoutExpired:
@@ -152,17 +154,17 @@ def main():
             if input_data is not None:
                 print("\n--- Input ---")
                 print(input_data, end="")
-            if not is_continue():
+            if not is_continue(args.y):
                 return
 
         except OSError as e:
             print(f"Execution error! stage={stage}, seed={seed}")
             print(e)
             save_failure(seed, input_data, ac, wa)
-            if not is_continue():
+            if not is_continue(args.y):
                 return
 
-        if (i + 1) % 50 == 0:
+        if (i + 1) % 10 == 0:
             print(f"Passed: {i + 1} last_seed={seed}")
 
     print(f"All {args.tests} tests passed.")
